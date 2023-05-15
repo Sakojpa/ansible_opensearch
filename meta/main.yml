@@ -1,0 +1,22 @@
+# meta file for percona-server
+---
+galaxy_info:
+  role_name: opensearch
+  author: Sergey Gogolev
+  company: Sports.Ru
+  description: Opensearch role based on official repo
+  license: Apache 2.0
+  min_ansible_version: 2.12.10
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+        - bionic
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+  galaxy_tags:
+    - system
+    - opensearch
+dependencies: []
