@@ -1,0 +1,10 @@
+---
+- name: reload systemd configuration
+  become: true
+  ansible.builtin.command: systemctl daemon-reload
+  
+- name: restart opensearch
+  ansible.builtin.systemd: name=opensearch state=restarted enabled=yes
+
+- name: restart dashboards
+  ansible.builtin.systemd: name=dashboards state=restarted enabled=true

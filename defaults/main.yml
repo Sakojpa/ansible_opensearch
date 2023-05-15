@@ -1,0 +1,39 @@
+---
+os_cluster_name: development-cluster
+os_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch
+os_version: "2.7.0"
+os_dashboards_version: "2.7.0"
+
+os_home: /usr/share/opensearch
+os_conf_dir: "{{ os_home }}/config"
+os_plugin_bin_path: /usr/share/opensearch/bin/opensearch-plugin
+os_sec_plugin_conf_path: "{{ os_home }}/config/opensearch-security"
+os_sec_plugin_tools_path: "{{ os_home }}/plugins/opensearch-security/tools"
+
+os_dashboards_home: /usr/share/opensearch-dashboards
+os_dashboard_conf_dir: "{{ os_dashboards_home }}/config"
+os_dashboard_plugin_bin_path: "{{ os_dashboards_home }}/bin/opensearch-dashboards-plugin"
+
+os_api_port: 9200
+
+os_user: opensearch
+cluster_type: multi-node
+
+domain_name: example.com
+
+systemctl_path: /etc/systemd/system
+
+
+xms_value: 2
+xmx_value: 2
+
+auth_type: internal
+
+cert_valid_days: 730
+copy_custom_security_configs: false
+custom_security_plugin_configs:
+  - tenants.yml
+  - roles.yml
+  - roles_mapping.yml
+  - internal_users.yml
+iac_enable: false
