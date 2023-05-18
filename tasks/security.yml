@@ -132,7 +132,6 @@
   ansible.builtin.blockinfile:
     block: "{{ lookup('template', 'templates/security_conf.yml') }}"
     dest: "{{ os_conf_dir }}/opensearch.yml"
-    backup: true
     insertafter: EOF
     marker: "## {mark} OpenSearch Security common configuration ##"
   when: configuration.changed or iac_enable
@@ -141,7 +140,6 @@
   ansible.builtin.blockinfile:
     block: "{{ lookup('file', '/tmp/opensearch-nodecerts/config/{{ inventory_hostname }}_elasticsearch_config_snippet.yml') }}"
     dest: "{{ os_conf_dir }}/opensearch.yml"
-    backup: true
     insertafter: EOF
     marker: "## {mark} opensearch Security Node & Admin certificates configuration ##"
   when: configuration.changed or iac_enable
@@ -159,7 +157,6 @@
   ansible.builtin.template:
     src: security_plugin_conf.yml
     dest: "{{ os_sec_plugin_conf_path }}/config.yml"
-    backup: true
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
     mode: 0600
@@ -206,11 +203,21 @@
     dest: "{{ os_sec_plugin_conf_path }}/"
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-    backup: true
     mode: 0640
     force: true
   no_log: "{{ os_no_log }}"
   loop: "{{ custom_security_plugin_configs }}"
+
+- name: Security Plugin configuration | Set passwords for all users from custom config
+  ansible.builtin.shell: >
+     sed -i '/hash: / s,{{ item.value | json_query('hash') }},'$(bash {{ os_sec_plugin_tools_path }}/hash.sh -p {{ item.value | json_query('hash') }} | tail -1)','
+     {{ os_sec_plugin_conf_path }}/internal_users.yml
+  environment:
+    JAVA_HOME: "{{ os_home }}/jdk"
+  run_once: true
+  no_log: "{{ os_no_log }}"
+  when: configuration.changed or copy_custom_security_configs
+  loop: "{{ os_internal_users | dict2items | list }}"
 
 - name: Security Plugin configuration | Initialize the opensearch security index in opensearch with custom configs
   ansible.builtin.shell: >

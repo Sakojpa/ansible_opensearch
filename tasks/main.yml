@@ -70,6 +70,6 @@
 
     - name: Make sure opensearch dashboards is started
       ansible.builtin.service:
-        name: opensearch-dashboards
+        name: opensearch_dashboards
         state: started
         enabled: true
